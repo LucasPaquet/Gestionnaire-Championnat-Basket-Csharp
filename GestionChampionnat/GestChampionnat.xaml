@@ -1,0 +1,97 @@
+﻿<Window x:Class="GestionChampionnat.GestChampionnat"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GestionChampionnat"
+        xmlns:classeBasket="clr-namespace:ClasseBasket;assembly=ClasseBasket"
+        mc:Ignorable="d"
+        Title="Gestion du championnat" Height="1000" Width="1300">
+
+    <Window.Resources>
+        <classeBasket:BoolToColorConverter x:Key="BoolToColorConverter" />
+    </Window.Resources>
+
+    <Grid x:Name="gridMain">
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Fichier">
+                    <MenuItem x:Name="BtnBackSelectChamp" Header="Retourner à la sélection du championnat" Click="BtnBackSelectChamp_OnClick"/>
+                    <MenuItem x:Name="BtnQuitter" Header="Quitter" Click="BtnQuitter_OnClick"/>
+                </MenuItem>
+                <MenuItem Header="Option">
+                    <MenuItem x:Name="btnAccess" Header="Option d'accessibilité" Click="BtnAccess_OnClick"/>
+                </MenuItem>
+            </Menu>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Prochaine match -->
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Grid.Column="0" Text="Prochain match : " Margin="10,10,10,10" FontWeight="Bold" FontSize="20"></TextBlock>
+
+                    <DataGrid x:Name="dgMatch" ItemsSource="{Binding CurrentChampionnat.Matches}" SelectedItem="{Binding CurrentChampionnat.CurrentMatch}" Margin="10,10,10,10" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Équipe local" Binding="{Binding EquipeLocal.Equipe.Nom}" Width="*" MinWidth="70" />
+                            <DataGridTextColumn Header="Équipe extérieur" Binding="{Binding EquipeExterieur.Equipe.Nom}" Width="*" MinWidth="70" />
+                            <DataGridTextColumn Header="Date et heure de rencontre" Binding="{Binding Rencontre}" Width="2.5*" SortDirection="Descending" SortMemberPath="Rencontre" MinWidth="130" />
+                            <DataGridTextColumn Header="Jouer ?" Width="0.5*" MinWidth="50">
+                                <DataGridTextColumn.Binding>
+                                    <Binding Path="Played" />
+                                </DataGridTextColumn.Binding>
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Background" Value="{Binding Path=Played, Converter={StaticResource BoolToColorConverter}}" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <GroupBox Header="Jouer un match" Margin="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            
+                            <Label Grid.Column="0" Grid.Row="0" Content="Score Local : " Margin="5,0,0,0"></Label>
+                            <Label Grid.Column="1" Grid.Row="0" Content="Score Extérieur : " Margin="5,0,0,0"></Label>
+
+                            <TextBox x:Name="tbScoreLocal" Grid.Column="0" Grid.Row="1" Margin="10,0,10,10" Height="25" PreviewTextInput="TextBox_PreviewTextInput"></TextBox>
+                            <TextBox x:Name="tbScoreExterieur" Grid.Column="1" Grid.Row="1" Margin="10,0,10,10" Height="25" PreviewTextInput="TextBox_PreviewTextInput"></TextBox>
+                            <Button Grid.Column="2" Grid.Row="1" x:Name="btnJouer" Content="Jouer le match" Margin="10,0,10,10" Height="26" FontWeight="Bold" Background="#FFDCEAF1" Click="BtnJouer_OnClick"/>
+
+                        </Grid>
+                    </GroupBox>
+
+                </StackPanel>
+
+                <!-- Classement -->
+
+                <StackPanel Grid.Column="1">
+                    <TextBlock x:Name="tbClassement" Grid.Column="0" Text="Classement : " Margin="10,10,10,10" FontWeight="Bold" FontSize="20"></TextBlock>
+
+                    <DataGrid x:Name="dgClassement" ItemsSource="{Binding CurrentChampionnat.Equipes}" AutoGenerateColumns="False" Margin="10,10,10,10" IsReadOnly="True" SelectionMode="Single">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Équipe" Binding="{Binding Equipe.Nom}" Width="2.5*" />
+                            <DataGridTextColumn Header="Victoire" Binding="{Binding Victoire}" Width="*"/>
+                            <DataGridTextColumn Header="Défaite" Binding="{Binding Defaite}" Width="*"/>
+                            <DataGridTextColumn Header="Égalité" Binding="{Binding Egalite}" Width="*"/>
+                            <DataGridTextColumn Header="Points" Binding="{Binding Point}" Width="*" SortDirection="Descending" SortMemberPath="Point"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</Window>
